@@ -1,6 +1,7 @@
 <?php
 include 'home.php';
 
+
 if ($connect->connect_error) {
     die("Connection failed: " . $connect->connect_error);
 }
@@ -17,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         exit;
     }
 
-    // strong password
+    //strong password
     $password_error = "";
     if (strlen($psswd) < 8) {
         $password_error .= "Password must be at least 8 characters long, ";
@@ -36,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     }
 
     if ($password_error) {
-        echo "<div class='message' style='color: red; text-align: center;'>$password_error</div>";
+        echo "<div class='message'>$password_error</div>";
         exit;
     }
 
@@ -54,12 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         $stmtinsert->bind_param("ssss", $name, $email, $psswd, $role);
 
         if ($stmtinsert->execute()) {
-            echo "<div class='message' style='color: red; text-align: center;'>Registration successful. Redirecting to login...</div>";
-            echo "<script>
-                    setTimeout(function() {
-                        window.location.href = 'login.php';
-                    }, 2000); // Redirect after 2 seconds
-                  </script>";
+            echo "<div class='message'>Registration successful. Redirecting to login...</div>";
+            header('Refresh: 2; URL=login.php'); 
         } else {
             echo "<div class='message' style='color: red; text-align: center;'>Error during registration.</div>";
         }
