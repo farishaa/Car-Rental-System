@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-
+        // password verify
         if (password_verify($psswd, $user['psswd'])) {
             session_start();
             $_SESSION['user_id'] = $user['user_id'];
