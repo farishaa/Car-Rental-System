@@ -1,23 +1,29 @@
 <?php
 include 'home.php';
 
-session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
-    $email = $_POST['email'];
-    $psswd = $_POST['psswd'];
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $psswd = trim($_POST['psswd']);
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<div class='message'>Invalid email format.</div>";
+        exit;
+    }
+
+    
 
     $sql = "SELECT * FROM Users WHERE email = ?";
     $stmt = $connect->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-    
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
 
         if (password_verify($psswd, $user['psswd'])) {
+            session_start();
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'];
@@ -30,8 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         echo "<div class='message'>Invalid email or password.</div>";
     }
 }
-
-$connect->close();
 ?>
 
 <!DOCTYPE html>
