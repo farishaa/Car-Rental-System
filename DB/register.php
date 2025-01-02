@@ -1,40 +1,73 @@
 <?php
 include 'home.php';
 
-$servername = "localhost";
-$username = "root"; 
-$password = ""; 
-$dbname = "car_rental"; 
-
-$connect = new mysqli($servername, $username, $password, $dbname);
-
 if ($connect->connect_error) {
     die("Connection failed: " . $connect->connect_error);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $psswd = password_hash($_POST['psswd'], PASSWORD_BCRYPT);
-    $role = $_POST['role'];
+    $name = trim($_POST['name']);
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $psswd = trim($_POST['psswd']);
+    $role = trim($_POST['role']);
 
-    $sql = "SELECT * FROM Users WHERE email = '$email'";
-    $result = mysqli_query($connect, $sql);
+    //email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<div class='message'>Invalid email format.</div>";
+        exit;
+    }
 
-    if (mysqli_num_rows($result) == 0) {
-        $sqlinsert = "INSERT INTO Users (name, psswd, email, role) VALUES ('$name', '$psswd', '$email', '$role')";
-        if (mysqli_query($connect, $sqlinsert)) {
-            echo "<div class='message'>Registration successful. Redirecting to login...</div>";
-            header('Refresh: 2; URL=login.php'); 
+    // strong password
+    $password_error = "";
+    if (strlen($psswd) < 8) {
+        $password_error .= "Password must be at least 8 characters long, ";
+    }
+    if (!preg_match("/[A-Z]/", $psswd)) {
+        $password_error .= "Password must include at least one uppercase letter, ";
+    }
+    if (!preg_match("/[a-z]/", $psswd)) {
+        $password_error .= "one lowercase letter, ";
+    }
+    if (!preg_match("/[0-9]/", $psswd)) {
+        $password_error .= "one number, ";
+    }
+    if (!preg_match("/[#.*.^]/", $psswd)) {
+        $password_error .= "and one special character.";
+    }
+
+    if ($password_error) {
+        echo "<div class='message' style='color: red; text-align: center;'>$password_error</div>";
+        exit;
+    }
+
+    $psswd = password_hash($psswd, PASSWORD_BCRYPT);
+
+    $sql = "SELECT * FROM Users WHERE email = ?";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 0) { 
+        $sqlinsert = "INSERT INTO Users (name, email, psswd, role) VALUES (?, ?, ?, ?)";
+        $stmtinsert = $connect->prepare($sqlinsert);
+        $stmtinsert->bind_param("ssss", $name, $email, $psswd, $role);
+
+        if ($stmtinsert->execute()) {
+            echo "<div class='message' style='color: red; text-align: center;'>Registration successful. Redirecting to login...</div>";
+            echo "<script>
+                    setTimeout(function() {
+                        window.location.href = 'login.php';
+                    }, 2000); // Redirect after 2 seconds
+                  </script>";
         } else {
-            echo "<div class='message'>Error during registration.</div>";
+            echo "<div class='message' style='color: red; text-align: center;'>Error during registration.</div>";
         }
     } else {
-        echo "<div class='message'>Email already exists.</div>";
+        echo "<div class='message' style='color: red; text-align: center;'>Email already exists.</div>";
     }
 }
 
-$connect->close();
 ?>
 
 
