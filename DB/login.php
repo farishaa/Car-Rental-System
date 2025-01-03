@@ -3,15 +3,16 @@ include 'home.php';
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
+    //Input sanitization, remove whitespace
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $psswd = trim($_POST['psswd']);
 
+    //Input validation
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<div class='message'>Invalid email format.</div>";
         exit;
     }
 
-    
 
     $sql = "SELECT * FROM Users WHERE email = ?";
     $stmt = $connect->prepare($sql);
@@ -21,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-        // password verify
         if (password_verify($psswd, $user['psswd'])) {
             session_start();
             $_SESSION['user_id'] = $user['user_id'];
