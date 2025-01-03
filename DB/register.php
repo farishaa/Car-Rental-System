@@ -7,10 +7,22 @@ if ($connect->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
-    $name = trim($_POST['name']);
-    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
-    $psswd = trim($_POST['psswd']);
-    $role = trim($_POST['role']);
+    //input sanitization, remove whitespace
+    $name = htmlspecialchars(trim($_POST['name'])); 
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL); 
+    $psswd = trim($_POST['psswd']); 
+    $role = htmlspecialchars(trim($_POST['role']));
+    
+    // Input validation
+    if (!preg_match("/^[a-zA-Z\s]+$/", $name)) {
+        echo("<div class='message'>Invalid name format!</div>");
+        exit;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo("<div class='message'>Invalid email format!</div>");
+        exit;
+    }
 
     //email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -37,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     }
 
     if ($password_error) {
-        echo "<div class='message'>$password_error</div>";
+        echo "<div class='message' style='color: red; text-align: center;'>$password_error</div>";
         exit;
     }
 
