@@ -20,6 +20,10 @@ if (!$result_user || $result_user->num_rows === 0) {
 $user = $result_user->fetch_assoc();
 $role = $user['role'];
 
+// Fetch all cars
+$sql_cars = "SELECT * FROM Cars";
+$result_cars = $connect->query($sql_cars);
+
 // Redirect if not admin
 if ($role !== 'admin') {
     header("Location: homepage.php");
@@ -42,6 +46,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = "Error adding car: " . $connect->error;
     }
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_car_id'])) {
+    $delete_car_id = (int) $_POST['delete_car_id'];
+
+    // Fetch car details for logging
+    $sql_fetch_car = "SELECT * FROM Cars WHERE car_id = ?";
+    $stmt = $connect->prepare($sql_fetch_car);
+    $stmt->bind_param("i", $delete_car_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $car = $result->fetch_assoc();
+
+    if ($car) {
+        // Delete the car
+        $sql_delete_car = "DELETE FROM Cars WHERE car_id = ?";
+        $stmt = $connect->prepare($sql_delete_car);
+        $stmt->bind_param("i", $delete_car_id);
+
+        if ($stmt->execute()) {
+            $success_message = "Car successfully deleted.";
+
+            // Log admin action
+            $user_id = $_SESSION['user_id'];
+            $action_type = "Delete Car";
+            $action_details = "Deleted car: " . $car['car_name'] . " (ID: " . $car['car_id'] . ")";
+            $sql_audit = "INSERT INTO AdminAuditLogs (user_id, action_type, action_details) VALUES (?, ?, ?)";
+            $stmt = $connect->prepare($sql_audit);
+            $stmt->bind_param("iss", $user_id, $action_type, $action_details);
+            $stmt->execute();
+        } else {
+            $error_message = "Error deleting car: " . $connect->error;
+        }
+    } else {
+        $error_message = "Car not found.";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="top-nav">
         <form action="homepage.php" method="get">
             <button type="submit" class="top-btn">Dashboard</button>
+        </form>
+        <form action="update_car.php" method="get">
+            <button type="submit" class="top-btn">Update Car</button>
+        </form>
+        <form action="user_account.php" method="get">
+            <button type="submit" class="top-btn">Profile Account</button>
         </form>
         <form action="logout.php" method="get">
             <button type="submit" class="top-btn">Logout</button>
@@ -84,5 +130,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="submit-btn">Add Car</button>
         </form>
     </div>
+    <div class="car-list">
+    <h2>Available Cars</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Car ID</th>
+                <th>Car Name</th>
+                <th>Car Model</th>
+                <th>Rental Price (RM)</th>
+                <th>Availability</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($car = $result_cars->fetch_assoc()): ?>
+                <tr>
+                    <td><?= htmlspecialchars($car['car_id']); ?></td>
+                    <td><?= htmlspecialchars($car['car_name']); ?></td>
+                    <td><?= htmlspecialchars($car['car_model']); ?></td>
+                    <td><?= number_format($car['rental_price'], 2); ?></td>
+                    <td><?= htmlspecialchars($car['availability']); ?></td>
+                    <td>
+                        <form action="" method="post" style="display: inline;">
+                            <input type="hidden" name="delete_car_id" value="<?= $car['car_id']; ?>">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
