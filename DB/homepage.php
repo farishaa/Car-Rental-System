@@ -53,66 +53,83 @@
                 </form>
             <?php endif; ?>
 
+            <?php if ($role == 'dba'): ?>
+                <!-- DBA Backup and Restore buttons -->
+                <form action="backup.php" method="get">
+                    <button type="submit" class="top-btn">Backup Data</button>
+                </form>
+                <form action="restore.php" method="get">
+                    <button type="submit" class="top-btn">Restore Data</button>
+                </form>
+                <?php endif; ?>
+
             <form action="logout.php" method="get">
                 <button type="submit" class="top-btn">Logout</button>
             </form>
         </div>
 
-    
-        <div class="cars-list">
-            <h2>Car lists</h2>
+        <?php if ($role == 'dba'): ?>
+            <!-- DBA page content -->
+            <div class="dba-welcome">
+                <h2>Welcome to DBA Page!</h2>
+            </div>
+        <?php else: ?>  
 
-            <?php if ($role == 'admin'): ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Car Name</th>
-                            <th>Model</th>
-                            <th>Price per day (RM)</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($car = $result_cars->fetch_assoc()): ?>
+    
+            <div class="cars-list">
+                <h2>Car lists</h2>
+
+                <?php if ($role == 'admin'): ?>
+                    <table>
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($car['car_name']); ?></td>
-                                <td><?php echo htmlspecialchars($car['car_model']); ?></td>
-                                <td><?php echo htmlspecialchars($car['rental_price']); ?></td>
-                                <td><?php echo htmlspecialchars($car['availability']); ?></td>
+                                <th>Car Name</th>
+                                <th>Model</th>
+                                <th>Price per day (RM)</th>
+                                <th>Status</th>
                             </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Car Name</th>
-                            <th>Model</th>
-                            <th>Price per day (RM)</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($car = $result_cars->fetch_assoc()): ?>
-                            <?php if ($car['availability'] == 'available'): ?>
+                        </thead>
+                        <tbody>
+                            <?php while ($car = $result_cars->fetch_assoc()): ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($car['car_name']); ?></td>
                                     <td><?php echo htmlspecialchars($car['car_model']); ?></td>
                                     <td><?php echo htmlspecialchars($car['rental_price']); ?></td>
-                                    <td>
-                                        <form action="book_car.php" method="post">
-                                            <input type="hidden" name="car_id" value="<?= htmlspecialchars($car['car_id']); ?>">
-                                            <button type="submit" class="book-btn">Book</button>
-                                        </form>
-                                    </td>
+                                    <td><?php echo htmlspecialchars($car['availability']); ?></td>
                                 </tr>
-                            <?php endif; ?>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </div>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Car Name</th>
+                                <th>Model</th>
+                                <th>Price per day (RM)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($car = $result_cars->fetch_assoc()): ?>
+                                <?php if ($car['availability'] == 'available'): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($car['car_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($car['car_model']); ?></td>
+                                        <td><?php echo htmlspecialchars($car['rental_price']); ?></td>
+                                        <td>
+                                            <form action="book_car.php" method="post">
+                                                <input type="hidden" name="car_id" value="<?= htmlspecialchars($car['car_id']); ?>">
+                                                <button type="submit" class="book-btn">Book</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
 
     </body>
     
