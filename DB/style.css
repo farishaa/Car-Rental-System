@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+
+}
+body{
+    background: #e4e9f7;
+    padding-top: 60px;
+}
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+}
+.box{
+    background: #fdfdfd;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
+                0 32px 64px -48px rgba(0,0,0,0.5);
+}
+.form-box{
+    width: 450px;
+    margin: 0px 10px;
+}
+.form-box header{
+    font-size: 25px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+}
+.form-box form .field{
+    display: flex;
+    margin-bottom: 10px;
+    flex-direction: column;
+
+}
+.form-box form .input input{
+    height: 40px;
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.btn{
+    height: 35px;
+    background: rgba(76,68,182,0.808);
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+.btn:hover{
+    opacity: 0.82;
+}
+.submit{
+    width: 100%;
+}
+.links{
+    margin-bottom: 15px;
+}
+
+/********* Home *****************/
+
+.nav{
+    background: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    line-height: 60px;
+    z-index: 100;
+}
+.logo{
+    font-size: 25px;
+    font-weight: 900;
+    
+}
+.logo a{
+    text-decoration: none;
+    color: #000;
+}
+.right-links a{
+    padding: 0 10px;
+}
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+}
+.main-box{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+.main-box .top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.bottom{
+    width: 100%;
+    margin-top: 20px;
+}
+@media only screen and (max-width:840px){
+    .main-box .top{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .top .box{
+        margin: 10px 10px;
+    }
+    .bottom{
+        margin-top: 0;
+    }
+}
+.message{
+    text-align: center;
+    background: #f9eded;
+    padding: 15px 0px;
+    border:1px solid #699053;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: red;
+}
+
+form {
+    margin: 0;
+}
+
+
+/* Top Navigation Bar */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    padding: 10px 20px;
+    z-index: 1000; /* Ensure the nav bar stays on top of other content */
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #333;
+    padding: 10px 20px;
+    z-index: 1000; /* Ensure the navbar stays on top of other content */
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    width: auto; /* Allow the navbar to take as much width as the buttons need */
+}
+
+.top-nav button:hover {
+    background-color: #555;
+}
+
+/* Main content area */
+.main-content {
+    margin-top: 60px; /* Adjust for the fixed navigation bar */
+    padding: 20px;
+}
+
+.content-header h1 {
+    margin-bottom: 20px;
+}
+
+.cars-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cars-list table th, .cars-list table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.cars-list table th {
+    background-color: #f2f2f2;
+}
+
+.cars-list table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Style for the cars list container */
+.cars-list {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+/* Table style */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Table headers */
+th {
+    background-color: #3498db;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+/* Table data cells */
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th, td {
+    color: black; /* Make the text black */
+}
+
+/* Button styling in table */
+.top-btn {
+    padding: 8px 16px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Optional: hover effect for rows */
+tr:hover {
+    background-color: #f2f2f2;
+}
+
+.book-btn {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #13878f; 
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.booking-container {
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.booking-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+.booking-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.booking-container input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.booking-container button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.booking-container button:hover {
+    background-color: #4cae4c;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.popup h3 {
+    margin: 0 0 10px;
+}
+.popup button {
+    margin-top: 10px;
+}
+
+.booking-details {
+    margin: 20px auto;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+.booking-details table {
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.booking-details th, .booking-details td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.booking-details th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.booking-details tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #cc0000;
+}
