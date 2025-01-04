@@ -5,6 +5,13 @@ include 'home.php';
 $response = null;
 $bookingDetails = null;
 
+function logAudit($user_id, $action, $description) {
+    global $connect;
+    $sql_audit = "INSERT INTO AuditLogs (user_id, action, description) VALUES (?, ?, ?)";
+    $stmt_audit = $connect->prepare($sql_audit);
+    $stmt_audit->bind_param("iss", $user_id, $action, $description);
+    $stmt_audit->execute();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['date_start'], $_POST['date_end'], $_POST['car_id'])) {
     $car_id = $_POST['car_id'];
@@ -19,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['date_start'], $_POST[
 
     if ($duration <= 0) {
         $response = "Invalid booking duration.";
+        logAudit($user_id, "Booking Failed", "User ID: $user_id tried to book with invalid duration (Start: $date_start, End: $date_end).");
     } else {
         // fetch car price
         $sql_car = "SELECT car_name, car_model, rental_price FROM Cars WHERE car_id = ?";
@@ -29,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['date_start'], $_POST[
 
         if ($result_car->num_rows === 0) {
             $response = "Car not found.";
+            logAudit($user_id, "Booking Failed", "User ID: $user_id tried to book a non-existent car (Car ID: $car_id).");
         } else {
             $car = $result_car->fetch_assoc();
             $rental_price = $car['rental_price'];
@@ -57,15 +66,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['date_start'], $_POST[
                     'date_start' => $date_start,
                     'date_end' => $date_end
                 ];
+
+                // Log the successful booking
+                logAudit($user_id, "Booking Created", "User ID: $user_id booked car '" . $car['car_name'] . "' (Model: " . $car['car_model'] . ") from $date_start to $date_end for RM " . number_format($amount, 2));
+
             } else {
                 $response = "Booking failed. Please try again.";
+                logAudit($user_id, "Booking Failed", "User ID: $user_id failed to create a booking for car '" . $car['car_name'] . "' (Model: " . $car['car_model'] . ").");
             }
             $stmt->close();
         }
     }
+        // Car modifications status
+        if ($_SESSION['role'] === 'admin') {
+        $user_id = $_SESSION['user_id'];
+        $action_type = "Modify Car";
+        $action_details = "Updated car availability to 'booked' for car_id: $car_id";
+    
+        $sql_audit = "INSERT INTO AdminAuditLogs (user_id, action_type, action_details) VALUES (?, ?, ?)";
+        $stmt = $connect->prepare($sql_audit);
+        $stmt->bind_param("iss", $user_id, $action_type, $action_details);
+        $stmt->execute();
+    }
+        // Booking modification
+        if ($_SESSION['role'] === 'admin') {
+        $user_id = $_SESSION['user_id'];
+        $action_type = "Modify Booking";
+        $action_details = "Updated booking for rent_id: $rent_id";
+    
+        $sql_audit = "INSERT INTO AdminAuditLogs (user_id, action_type, action_details) VALUES (?, ?, ?)";
+        $stmt = $connect->prepare($sql_audit);
+        $stmt->bind_param("iss", $user_id, $action_type, $action_details);
+        $stmt->execute();
+    }
+    
 }
 
-// fetch available cars
 $sql_cars = "SELECT * FROM Cars WHERE availability = 'available'";
 $result_cars = $connect->query($sql_cars);
 $connect->close();
@@ -102,6 +138,5 @@ $connect->close();
             </div>
         <?php endif; ?>
 
-       
     </body>
 </html>
