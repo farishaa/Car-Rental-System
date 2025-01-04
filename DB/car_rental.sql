@@ -76,9 +76,7 @@ INSERT INTO `cars` (`car_id`, `car_name`, `car_model`, `rental_price`, `availabi
 	(7, 'Honda City', '2010', 85.00, 'booked'),
 	(8, 'Honda CRV', '2024', 100.00, 'available'),
 	(9, 'Perodua Ativa', '2023', 75.00, 'booked'),
-	(10, 'Proton X-70', '2024', 75.00, 'available'),
-	(38, 'Proton Saga', '2022', 60.00, 'available'),
-	(39, 'Proton Saga', '2022', 60.00, 'available');
+	(10, 'Proton X-70', '2024', 75.00, 'available');
 
 -- Dumping structure for table car_rental.rental
 CREATE TABLE IF NOT EXISTS `rental` (
