@@ -35,6 +35,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     } else {
         echo "<div class='message'>Invalid email or password.</div>";
     }
+
+    if ($user['role'] === 'admin') {
+        $user_id = $user['user_id']; // Assuming $user contains the logged-in user data.
+        $action_type = "Login";
+        $action_details = "Admin logged in successfully.";
+        
+        $sql_audit = "INSERT INTO AdminAuditLogs (user_id, action_type, action_details) VALUES (?, ?, ?)";
+        $stmt = $connect->prepare($sql_audit);
+        $stmt->bind_param("iss", $user_id, $action_type, $action_details);
+        $stmt->execute();
+    }
 }
 ?>
 
