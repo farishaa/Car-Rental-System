@@ -27,7 +27,7 @@ if ($role !== 'admin') {
     exit();
 }
 
-// Handle form submission to add car
+//form submission to add car
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $car_name = isset($_POST['car_name']) ? $connect->real_escape_string($_POST['car_name']) : '';
     $car_model = isset($_POST['car_model']) ? $connect->real_escape_string($_POST['car_model']) : '';
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_car_id'])) {
     $car = $result->fetch_assoc();
 
     if ($car) {
-        // Delete the car
+        // delete the car
         $sql_delete_car = "DELETE FROM Cars WHERE car_id = ?";
         $stmt = $connect->prepare($sql_delete_car);
         $stmt->bind_param("i", $delete_car_id);
@@ -145,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_car_id'])) {
         <tbody>
             <?php while ($car = $result_cars->fetch_assoc()): ?>
                 <tr>
-                
                     <td><?= htmlspecialchars($car['car_name']); ?></td>
                     <td><?= htmlspecialchars($car['car_model']); ?></td>
                     <td><?= number_format($car['rental_price'], 2); ?></td>
