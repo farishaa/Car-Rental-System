@@ -11,6 +11,13 @@ if (!isset($_SESSION['login_attempts'])) {
 $max_attempts = 3; // Number of allowed attempts
 $lockout_duration = 300; // Lockout duration in seconds (5 minutes)
 
+$current_time = time();
+if ($_SESSION['login_attempts'] >= $max_attempts && $current_time < $_SESSION['lockout_time']) {
+    echo "<div class='message'>Too many login attempts. Please try again after " . 
+         ceil(($_SESSION['lockout_time'] - $current_time) / 60) . " minutes.</div>";
+    exit;
+}
+
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     //Input sanitization, remove whitespace
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
