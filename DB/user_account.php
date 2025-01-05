@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 
 include 'home.php';
 
-// Fetch user details
 $user_id = $_SESSION['user_id'];
 $sql_user = "SELECT * FROM Users WHERE user_id = '$user_id'";
 $result_user = $connect->query($sql_user);
