@@ -73,8 +73,6 @@ body{
     margin-bottom: 15px;
 }
 
-/********* Home *****************/
-
 .nav{
     background: #fff;
     display: flex;
@@ -142,8 +140,6 @@ form {
     margin: 0;
 }
 
-
-/* Top Navigation Bar */
 .top-nav {
     position: fixed;
     top: 0;
@@ -151,7 +147,7 @@ form {
     right: 0;
     background-color: #333;
     padding: 10px 20px;
-    z-index: 1000; /* Ensure the nav bar stays on top of other content */
+    z-index: 1000; 
     display: flex;
     justify-content: space-between;
 }
@@ -162,19 +158,18 @@ form {
     right: 0;
     background-color: #333;
     padding: 10px 20px;
-    z-index: 1000; /* Ensure the navbar stays on top of other content */
+    z-index: 1000; 
     display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
-    width: auto; /* Allow the navbar to take as much width as the buttons need */
+    justify-content: flex-end;
+    width: auto; 
 }
 
 .top-nav button:hover {
     background-color: #555;
 }
 
-/* Main content area */
 .main-content {
-    margin-top: 60px; /* Adjust for the fixed navigation bar */
+    margin-top: 60px; 
     padding: 20px;
 }
 
@@ -201,20 +196,17 @@ form {
     background-color: #f1f1f1;
 }
 
-/* Style for the cars list container */
 .cars-list {
     margin-top: 20px;
     padding: 20px;
 }
 
-/* Table style */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-/* Table headers */
 th {
     background-color: #3498db;
     color: white;
@@ -222,7 +214,6 @@ th {
     text-align: left;
 }
 
-/* Table data cells */
 td {
     padding: 12px;
     text-align: left;
@@ -230,10 +221,9 @@ td {
 }
 
 th, td {
-    color: black; /* Make the text black */
+    color: black; 
 }
 
-/* Button styling in table */
 .top-btn {
     padding: 8px 16px;
     background-color: #333;
@@ -247,7 +237,6 @@ button:hover {
     background-color: #2980b9;
 }
 
-/* Optional: hover effect for rows */
 tr:hover {
     background-color: #f2f2f2;
 }
