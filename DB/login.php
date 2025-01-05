@@ -3,6 +3,14 @@ include 'home.php';
 
 session_start();
 
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['lockout_time'] = 0;
+}
+
+$max_attempts = 3; // Number of allowed attempts
+$lockout_duration = 300; // Lockout duration in seconds (5 minutes)
+
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     //Input sanitization, remove whitespace
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
