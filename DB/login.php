@@ -29,6 +29,14 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
         exit;
     }
 
+    // Check if the user is locked out
+    $current_time = time();
+    if ($_SESSION['login_attempts'] >= $max_attempts && $current_time < $_SESSION['lockout_time']) {
+        echo "<div class='message'>Too many login attempts. Please try again after " . 
+             ceil(($_SESSION['lockout_time'] - $current_time) / 60) . " minutes.</div>";
+        exit;
+    }
+
     $sql = "SELECT * FROM Users WHERE email = ?";
     $stmt = $connect->prepare($sql);
     $stmt->bind_param("s", $email);
@@ -39,6 +47,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
         $user = $result->fetch_assoc();
 
         if (password_verify($psswd, $user['psswd'])) {
+
+            // Reset login attempts and lockout time on successful login
+            $_SESSION['login_attempts'] = 0;
+            $_SESSION['lockout_time'] = 0;
+
+
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'];
@@ -71,6 +85,12 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
                 $stmt->execute();
             }
 
+            // Increment login attempts on failure
+            $_SESSION['login_attempts'] += 1;
+            if ($_SESSION['login_attempts'] >= $max_attempts) {
+                $_SESSION['lockout_time'] = $current_time + $lockout_duration;
+            }
+
             echo "<div class='message'>Invalid email or password.</div>";
         }
     } 
@@ -92,8 +112,17 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
             $stmt->execute();
         }
 
+        // Increment login attempts on failure
+        $_SESSION['login_attempts'] += 1;
+        if ($_SESSION['login_attempts'] >= $max_attempts) {
+            $_SESSION['lockout_time'] = $current_time + $lockout_duration;
+        }
+
         echo "<div class='message'>Invalid email or password.</div>";
     }
+
+    //echo "<div class='message'>Invalid email or password.</div>";
+
 }
 
 $connect->close();
